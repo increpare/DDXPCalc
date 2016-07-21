@@ -1,0 +1,17 @@
+enemies e1...en
+xp reward function XP(playerLevel,enemyLevel)
+level formula L(xp)
+
+enemies		e_i
+level 		L(xp)
+xp reward	battleXP(L_p,L_e)
+			battleXP increasing in L_e and decreasing in L_p
+
+what do I want
+
+1 L + xp should be related linearly/exponentially/constantly/convex
+2 L should be a floor function with sudden jumps
+3 some set of enemies
+4 where killing strong enemies at the start maximizes the values of those enemies, but makes subsequent creatures worth less
+
+such that there are interesting choices

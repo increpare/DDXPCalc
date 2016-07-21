@@ -1,0 +1,111 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Desktop Dungeons XP calculator</title>
+<style>
+.highlight{
+	color:grey;
+}
+.swapped{
+	text-decoration: underline;
+}
+</style>
+</head>
+<body>
+<h1>Desktop Dungeons XP Calculator</h1>
+<p>
+<div id="output"></div>
+<script>
+
+
+//taken from http://www.qcfdesign.com/wiki/DesktopDungeons/index.php?title=Level
+function calcXP(playerLevel,enemyLevel){
+	if (enemyLevel<=playerLevel){
+		return enemyLevel;
+	}
+	var diff = enemyLevel-playerLevel;
+	return enemyLevel+diff*(diff-1)+2;
+}
+
+function calcLevel(xp){
+	return Math.floor ( (1 + Math.sqrt(1+(8.0*xp)/5)) /2 );
+}
+
+var defaultMonsters = [ 
+	1,1,1,1,1,1,1,1,1,1,
+	2,2,2,2,2,
+	3,3,3,3,
+	4,4,4,4,
+	5,5,5,5,
+	6,6,6,
+	7,7,7,
+	8,8,8,
+	9,9,
+	10
+];
+
+function shuffle(a) {
+    var j, x, i;
+    for (i = a.length; i; i--) {
+        j = Math.floor(Math.random() * i);
+        x = a[i - 1];
+        a[i - 1] = a[j];
+        a[j] = x;
+    }
+}
+
+function swap2(a){
+	var ia = Math.floor(Math.random()*(a.length-1));
+	var ib=ia+1;
+	if (a[ia]===a[ib]){
+		return false;
+	}
+	t = a[ia];
+	a[ia]=a[ib];
+	a[ib]=t;
+	return [ia,ib];
+}
+
+function doBattle(monsters){
+	var xp=0;
+	var resultString="";
+	var curLevel=1;
+	for (var i=0;i<monsters.length;i++){
+		var monsterLevel=monsters[i];
+		var playerLevel=calcLevel(xp);
+		var battleXP = calcXP(playerLevel,monsterLevel);
+		xp += battleXP;
+		var newLevel=calcLevel(xp);		
+		resultString+=monsterLevel;
+		if (newLevel>playerLevel){
+			resultString+=" <span class='highlight'>⬆<sup>"+newLevel+"</sup></span> ";
+		} else {
+			resultString+=" ";
+		}
+	}
+	return [xp,resultString];
+}
+
+function init(){
+	//defaultMonsters.reverse();
+	var lastMax=0;
+	var result="<dl>"
+	//defaultMonsters.reverse();
+	for (var i=0;i<10000;i++){
+		var dat = doBattle(defaultMonsters);
+		var xp = dat[0];
+		var resultString = dat[1];
+		if (xp>lastMax){
+			result+="<dt>Level "+calcLevel(xp)+" ("+xp+" XP)<dd>"+resultString;
+			lastMax=xp;
+		}
+		shuffle(defaultMonsters);
+	}
+
+	result+="</dl>"
+	document.getElementById("output").innerHTML=result;
+}
+window.onload=init;
+</script>
+</body>
+</html>
